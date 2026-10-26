@@ -59,6 +59,14 @@ const bar = page.locator('.topbar .contacts');
 check((await bar.locator('a[href^="tel:+39"]').count()) === 1 && (await bar.locator('a[href^="mailto:"]').count()) >= 1, 'contact bar: phone and e-mail links at the top right');
 const barBox = await bar.boundingBox();
 check(barBox.x + barBox.width > 1440 / 2 && barBox.y < 40, `contact bar sits top right (x ${Math.round(barBox.x)}–${Math.round(barBox.x + barBox.width)})`);
+await page.click('.ac-toggle');
+const rows = await page.$$eval('#all-contacts dt', (dts) => dts.map((d) => d.textContent));
+check(!(await page.isHidden('#all-contacts')) && rows.length >= 6, `"Tutti i contatti" opens the full list: ${rows.join(', ')}`);
+await page.keyboard.press('Escape');
+check((await page.isHidden('#all-contacts')) && (await page.getAttribute('.ac-toggle', 'aria-expanded')) === 'false', 'Esc closes the contacts panel');
+await page.click('.ac-toggle');
+await page.click('h1');
+check(await page.isHidden('#all-contacts'), 'a click outside closes the contacts panel');
 check((await page.textContent('#meta')).startsWith('Versione'), 'meta line: ' + (await page.textContent('#meta')));
 await page.screenshot({ path: join(shots, 'desktop.png'), fullPage: true });
 

@@ -23,7 +23,8 @@ export default defineConfig({
         return html
           .replace('<!--WUNDER_CONTACT_BAR-->', contactBar())
           .replace('<!--WUNDER_FOOTER_COMPANY-->', footer.company)
-          .replace('<!--WUNDER_FOOTER_CONTACTS-->', footer.contacts);
+          .replace('<!--WUNDER_FOOTER_CONTACTS-->', footer.contacts)
+          .replace('<!--WUNDER_FOOTER_SOCIAL-->', footer.social);
       },
     },
   ],

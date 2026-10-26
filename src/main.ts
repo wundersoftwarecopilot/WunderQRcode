@@ -270,6 +270,26 @@ if ('ClipboardItem' in window && navigator.clipboard?.write) {
   });
 }
 
+// ---------- all contacts panel (top right) ----------
+
+const acToggle = document.querySelector<HTMLButtonElement>('.ac-toggle');
+const acPanel = document.getElementById('all-contacts');
+if (acToggle && acPanel) {
+  const setOpen = (open: boolean, returnFocus = false) => {
+    acToggle.setAttribute('aria-expanded', String(open));
+    acPanel.hidden = !open;
+    if (returnFocus) acToggle.focus();
+  };
+  acToggle.addEventListener('click', () => setOpen(acToggle.getAttribute('aria-expanded') !== 'true'));
+  acPanel.querySelector('.ac-close')?.addEventListener('click', () => setOpen(false, true));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !acPanel.hidden) setOpen(false, acPanel.contains(document.activeElement));
+  });
+  document.addEventListener('click', (e) => {
+    if (!acPanel.hidden && !(e.target as Element).closest('.contact-bar')) setOpen(false);
+  });
+}
+
 // ---------- persistence and language ----------
 
 const DESIGN_FIELDS = ['fg', 'eye', 'bg', 'transparent', 'moduleStyle', 'eyeStyle', 'logo', 'margin', 'size'];
