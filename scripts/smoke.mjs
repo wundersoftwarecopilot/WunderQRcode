@@ -55,6 +55,10 @@ check((await page.textContent('h1')) === 'Generatore di QR Code', 'Italian by de
 check((await page.getAttribute('.site-header .brand', 'href')) === 'https://www.wunder.it/', 'header logo links to www.wunder.it');
 check((await page.getAttribute('.site-footer .brand', 'href')) === 'https://www.wunder.it/', 'footer logo links to www.wunder.it');
 check((await page.locator('.site-header .brand svg path').count()) === 2, 'header logo drawn from brand/logo.ts');
+const bar = page.locator('.topbar .contacts');
+check((await bar.locator('a[href^="tel:+39"]').count()) === 1 && (await bar.locator('a[href^="mailto:"]').count()) >= 1, 'contact bar: phone and e-mail links at the top right');
+const barBox = await bar.boundingBox();
+check(barBox.x + barBox.width > 1440 / 2 && barBox.y < 40, `contact bar sits top right (x ${Math.round(barBox.x)}–${Math.round(barBox.x + barBox.width)})`);
 check((await page.textContent('#meta')).startsWith('Versione'), 'meta line: ' + (await page.textContent('#meta')));
 await page.screenshot({ path: join(shots, 'desktop.png'), fullPage: true });
 
@@ -159,6 +163,7 @@ check((await page.locator('#notice.error').count()) === 1, 'too-long content sho
 // English.
 await page.click('[data-lang=en]');
 check((await page.textContent('h1')) === 'QR Code Generator' && (await page.getAttribute('html', 'lang')) === 'en', 'switches to English');
+check((await page.textContent('.contacts .c-phone .c-label')) === 'Phone', 'contact labels follow the language');
 await page.click('#tab-url');
 await page.waitForTimeout(50);
 await page.screenshot({ path: join(shots, 'desktop-en.png') });
@@ -169,6 +174,8 @@ const p2 = await phone.newPage();
 await p2.goto(url);
 await p2.waitForSelector('#preview svg');
 const overflow = await p2.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+const icons = await p2.$$eval('.topbar .contacts a', (as) => as.map((a) => { const r = a.getBoundingClientRect(); return r.width >= 40 && r.height >= 40 && r.top < 48; }));
+check(icons.length >= 3 && icons.every(Boolean), `phone: contacts are ${icons.length} tappable 40px icons in the top bar`);
 check(overflow <= 0, `no horizontal scroll on a phone (overflow ${overflow}px)`);
 await p2.screenshot({ path: join(shots, 'phone.png'), fullPage: true });
 

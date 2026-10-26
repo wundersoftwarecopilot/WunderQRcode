@@ -40,6 +40,7 @@ npm run smoke        # dopo il build: prova nel browser, scarica e rilegge ogni 
 | `src/qr/geometry.ts` | Forme di moduli, occhi, pattern di allineamento e logo |
 | `src/export/*` | Un esportatore per formato: SVG, raster (PNG/JPEG/WEBP), PDF, EPS |
 | `src/brand/logo.ts` | **Unico punto** in cui è definito il logo |
+| `src/brand/contacts.ts` | **Unico punto** con i dati di contatto (barra in alto a destra e footer) |
 | `src/i18n.ts` | Testi IT/EN |
 
 ## Logo

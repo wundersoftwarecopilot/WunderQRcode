@@ -94,18 +94,73 @@ textarea {
 .topbar-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  min-height: 36px;
+  gap: 20px;
+  min-height: 40px;
 }
 .tagline {
+  margin-right: auto;
   font-style: italic;
   text-transform: none;
   letter-spacing: 0.02em;
   font-size: 13px;
+  white-space: nowrap;
+}
+.contacts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0 20px;
+  margin: 0 0 0 auto;
+  padding: 0;
+  list-style: none;
+  font-size: 12.5px;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+.contacts a,
+.contacts .c-static {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 0;
+  color: #d9d9d5;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.contacts a:hover {
+  color: #fff;
+}
+.contacts a:hover .c-value {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.contacts svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  fill: none;
+  stroke: #ff5a5a;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.c-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 .lang {
   display: flex;
   gap: 2px;
+  padding-left: 14px;
+  border-left: 1px solid #3b3b38;
 }
 .lang button {
   border: 0;
@@ -943,6 +998,12 @@ input[type='color']::-moz-color-swatch {
 
 /* ---------- responsive ---------- */
 
+@media (max-width: 1180px) {
+  .tagline {
+    display: none;
+  }
+}
+
 @media (max-width: 1080px) {
   .colors {
     grid-template-columns: 1fr;
@@ -979,6 +1040,67 @@ input[type='color']::-moz-color-swatch {
   }
   .footer-grid {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 960px) {
+  /* Tablets: the address shrinks to its map button so the bar stays on one line. */
+  .contacts .c-address .c-value {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .contacts .c-address a {
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+  }
+  .contacts .c-address a:hover,
+  .contacts .c-address a:focus-visible {
+    background: #3b3b38;
+  }
+}
+
+@media (max-width: 760px) {
+  /* Phones: the contacts become icon buttons; their values stay readable to screen readers. */
+  .topbar-inner {
+    gap: 8px;
+  }
+  .contacts {
+    gap: 4px;
+  }
+  .contacts .c-value {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .contacts a {
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+  }
+  .contacts a:hover,
+  .contacts a:focus-visible {
+    background: #3b3b38;
+  }
+  .contacts svg {
+    width: 18px;
+    height: 18px;
+  }
+  .contacts .c-fax {
+    display: none;
   }
 }
 

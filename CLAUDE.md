@@ -12,6 +12,10 @@ UI in Italian and English.
 - **Logo** only from `src/brand/logo.ts` (placeholder W monogram until the official SVG arrives).
   `vite.config.ts` injects it into `<!--WUNDER_LOGO-->` and the favicon; the QR codes draw it from
   the same paths. Every header/footer logo links to https://www.wunder.it/.
+- **Contact data** only in `src/brand/contacts.ts`; `src/brand/contacts-html.ts` renders the
+  contact bar (top right of the top bar; icon buttons on phones) and the footer columns at build
+  time. Publish only values confirmed by independent sources (wunder.it is unreachable from the
+  build container).
 - Everything runs in the browser; never send the content anywhere. Do not persist the content
   (Wi-Fi passwords): only design settings and language go to localStorage.
 - Every text in the page goes through `src/i18n.ts` (`data-i18n`, `data-i18n-placeholder`,
