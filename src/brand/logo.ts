@@ -1,4 +1,4 @@
-import { BRAND } from './colors';
+import { BRAND } from './colors.ts';
 
 /**
  * The Wunder logo, as SVG path data in a 100 × 100 box.

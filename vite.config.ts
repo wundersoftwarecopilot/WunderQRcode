@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitest/config';
-import { logoSvg } from './src/brand/logo';
+import { logoSvg } from './src/brand/logo.ts';
 
 // Relative base: the site is served from https://<owner>.github.io/WunderQRcode/.
 export default defineConfig({
