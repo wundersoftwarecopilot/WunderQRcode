@@ -94,7 +94,12 @@ async function decodeImage(file, mime) {
 
 async function downloadAll(tag, expected) {
   for (const format of ['png', 'jpeg', 'webp', 'svg', 'pdf', 'eps']) {
-    const [download] = await Promise.all([page.waitForEvent('download'), page.click(`button[data-format=${format}]`)]);
+    await page.check(`input[name=format][value=${format}]`, { force: true });
+    const shown = await page
+      .waitForFunction((f) => document.querySelector('#download-fmt').textContent === f, format.toUpperCase(), { timeout: 2000 })
+      .then(() => true, () => false);
+    check(shown, `${tag} "Scarica QR Code" button shows ${format.toUpperCase()}`);
+    const [download] = await Promise.all([page.waitForEvent('download'), page.click('#download')]);
     const file = join(dl, `${tag}-${download.suggestedFilename()}`);
     await download.saveAs(file);
     const bytes = readFileSync(file);
@@ -122,6 +127,19 @@ async function downloadAll(tag, expected) {
 
 // Default: link to wunder.it, logo on, red eyes, 1024 px.
 await downloadAll('url', 'https://www.wunder.it/');
+
+// All formats at once.
+{
+  const [download] = await Promise.all([page.waitForEvent('download'), page.click('#download-zip')]);
+  const file = join(dl, download.suggestedFilename());
+  await download.saveAs(file);
+  const listing = execFileSync('python3', ['-c', 'import sys,zipfile\nz=zipfile.ZipFile(sys.argv[1])\nassert z.testzip() is None\nz.extractall(sys.argv[2])\nprint(" ".join(z.namelist()))', file, join(dl, 'zip')]).toString().trim();
+  check(download.suggestedFilename() === 'qrcode-wunder.zip' && listing === 'qrcode-wunder.png qrcode-wunder.jpg qrcode-wunder.webp qrcode-wunder.svg qrcode-wunder.pdf qrcode-wunder.eps', `ZIP holds every format: ${listing}`);
+  for (const [f, mime] of [['png', 'image/png'], ['jpg', 'image/jpeg'], ['webp', 'image/webp'], ['svg', 'image/svg+xml']]) {
+    const r = await decodeImage(join(dl, 'zip', `qrcode-wunder.${f}`), mime);
+    check(r.data === 'https://www.wunder.it/', `ZIP ${f.toUpperCase()} decodes`);
+  }
+}
 
 // Wi-Fi, dots + circle eyes, transparent background.
 await page.click('#tab-wifi');
@@ -163,7 +181,7 @@ check((await page.inputValue('select[name=ecc]')) === 'Q', 'ECC choice restored 
 // Empty and too-long content.
 await page.click('#tab-text');
 await page.waitForTimeout(50);
-check((await page.isDisabled('button[data-format=png]')) && (await page.textContent('#notice')).length > 0, 'empty content disables downloads');
+check((await page.isDisabled('#download')) && (await page.isDisabled('#download-zip')) && (await page.textContent('#notice')).length > 0, 'empty content disables the download buttons');
 await page.fill('textarea[name=text]', 'x'.repeat(4000));
 await page.waitForTimeout(50);
 check((await page.locator('#notice.error').count()) === 1, 'too-long content shows an error');

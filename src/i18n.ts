@@ -80,7 +80,12 @@ const IT = {
   size: 'Dimensione',
   sizeHint: '{cm} cm a 300 dpi',
   fileName: 'Nome file',
-  download: 'Scarica',
+  downloadQr: 'Scarica QR Code',
+  downloadAll: 'Tutti i formati',
+  downloadAllHint: 'Un file .zip con PNG, JPEG, WEBP, SVG, PDF ed EPS',
+  format: 'Formato',
+  downloadedZip: 'Scaricato {file} con {n} formati',
+  zipSkipped: '{fmt} non incluso: questo browser non sa crearlo.',
   fmtPng: 'Immagine, trasparenza',
   fmtJpeg: 'Immagine compatta',
   fmtWebp: 'Immagine per il web',
@@ -204,7 +209,12 @@ const EN: Dict = {
   size: 'Size',
   sizeHint: '{cm} cm at 300 dpi',
   fileName: 'File name',
-  download: 'Download',
+  downloadQr: 'Download QR code',
+  downloadAll: 'All formats',
+  downloadAllHint: 'One .zip file with PNG, JPEG, WEBP, SVG, PDF and EPS',
+  format: 'Format',
+  downloadedZip: 'Downloaded {file} with {n} formats',
+  zipSkipped: '{fmt} left out: this browser cannot create it.',
   fmtPng: 'Image, transparency',
   fmtJpeg: 'Compact image',
   fmtWebp: 'Image for the web',
@@ -260,9 +270,10 @@ export function t(key: Key, vars: Record<string, string | number> = {}): string 
   return DICTS[lang][key].replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ''));
 }
 
-/** Fills every [data-i18n], [data-i18n-placeholder] and [data-i18n-aria] under `root`. */
+/** Fills every [data-i18n], [data-i18n-placeholder], [data-i18n-aria] and [data-i18n-title] under `root`. */
 export function translate(root: ParentNode = document): void {
   root.querySelectorAll<HTMLElement>('[data-i18n]').forEach((el) => (el.textContent = t(el.dataset.i18n as Key)));
   root.querySelectorAll<HTMLInputElement>('[data-i18n-placeholder]').forEach((el) => (el.placeholder = t(el.dataset.i18nPlaceholder as Key)));
   root.querySelectorAll<HTMLElement>('[data-i18n-aria]').forEach((el) => el.setAttribute('aria-label', t(el.dataset.i18nAria as Key)));
+  root.querySelectorAll<HTMLElement>('[data-i18n-title]').forEach((el) => (el.title = t(el.dataset.i18nTitle as Key)));
 }

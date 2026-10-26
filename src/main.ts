@@ -5,12 +5,16 @@ import { toEps } from './export/eps';
 import { toPdf } from './export/pdf';
 import { UnsupportedFormatError, toRasterBlob } from './export/raster';
 import { toSvg } from './export/svg';
+import { zip } from './export/zip';
 import { type Key, type Lang, getLang, setLang, t, translate } from './i18n';
 import * as P from './payloads';
 import { type Design, type Drawing, type EyeStyle, type ModuleStyle, buildDrawing } from './qr/geometry';
 import { type Ecc, QrTooLongError, makeMatrix } from './qr/matrix';
 
 type Format = 'png' | 'jpeg' | 'webp' | 'svg' | 'pdf' | 'eps';
+const FORMATS: Format[] = ['png', 'jpeg', 'webp', 'svg', 'pdf', 'eps'];
+const FORMAT_HINTS: Record<Format, Key> = { png: 'fmtPng', jpeg: 'fmtJpeg', webp: 'fmtWebp', svg: 'fmtSvg', pdf: 'fmtPdf', eps: 'fmtEps' };
+const extension = (f: Format) => (f === 'jpeg' ? 'jpg' : f);
 
 /** Vector exports carry the raster size at 300 dpi: 1024 px → 8.67 cm. */
 const DPI = 300;
@@ -29,8 +33,13 @@ const preview = document.getElementById('preview') as HTMLDivElement;
 const meta = document.getElementById('meta') as HTMLParagraphElement;
 const notice = document.getElementById('notice') as HTMLParagraphElement;
 const sizeHint = document.getElementById('size-hint') as HTMLSpanElement;
-const downloads = document.getElementById('downloads') as HTMLDivElement;
+const downloadBtn = document.getElementById('download') as HTMLButtonElement;
+const downloadFmt = document.getElementById('download-fmt') as HTMLSpanElement;
+const formatHint = document.getElementById('format-hint') as HTMLParagraphElement;
+const zipBtn = document.getElementById('download-zip') as HTMLButtonElement;
 const copyBtn = document.getElementById('copy') as HTMLButtonElement;
+/** Everything that needs a code to act on. */
+const actions = [downloadBtn, zipBtn, copyBtn];
 const toast = document.getElementById('toast') as HTMLDivElement;
 
 const el = <T extends HTMLElement = HTMLInputElement>(name: string) => form.elements.namedItem(name) as unknown as T;
@@ -94,12 +103,14 @@ function update(): void {
   el<HTMLOutputElement>('sizeOut').value = `${px} px`;
   sizeHint.textContent = t('sizeHint', { cm: ((px / DPI) * 2.54).toLocaleString(getLang(), { maximumFractionDigits: 1 }) });
   preview.classList.toggle('transparent', d.bg === null);
+  const format = radio('format') as Format;
+  downloadFmt.textContent = format.toUpperCase();
+  formatHint.textContent = t(FORMAT_HINTS[format]);
   saveDesign();
 
   const text = payload();
   current = null;
-  downloads.querySelectorAll('button').forEach((b) => (b.disabled = true));
-  copyBtn.disabled = true;
+  actions.forEach((b) => (b.disabled = true));
   if (!text) {
     preview.innerHTML = '';
     preview.classList.add('empty');
@@ -123,8 +134,7 @@ function update(): void {
   preview.classList.remove('empty');
   preview.innerHTML = toSvg(drawing, 400, FILE_TITLE);
   current = drawing;
-  downloads.querySelectorAll('button').forEach((b) => (b.disabled = false));
-  copyBtn.disabled = false;
+  actions.forEach((b) => (b.disabled = false));
 
   const warnings: Key[] = [];
   const bg = d.bg ?? '#FFFFFF';
@@ -242,17 +252,43 @@ function showToast(message: string, error = false): void {
   toastTimer = window.setTimeout(() => toast.classList.remove('show'), 3200);
 }
 
-downloads.addEventListener('click', async (e) => {
-  const button = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-format]');
-  if (!button || !current) return;
-  const format = button.dataset.format as Format;
-  const name = `${fileBase()}.${format === 'jpeg' ? 'jpg' : format}`;
+downloadBtn.addEventListener('click', async () => {
+  if (!current) return;
+  const format = radio('format') as Format;
+  const name = `${fileBase()}.${extension(format)}`;
   try {
     save(await makeBlob(current, format, +val('size')), name);
     showToast(t('downloaded', { file: name }));
   } catch (err) {
     showToast(err instanceof UnsupportedFormatError ? t('unsupported', { fmt: format.toUpperCase() }) : t('failed'), true);
   }
+});
+
+/** Every format in one .zip; a format the browser cannot encode (WebP on Safari) is left out. */
+zipBtn.addEventListener('click', async () => {
+  if (!current) return;
+  const d = current;
+  const base = fileBase();
+  const px = +val('size');
+  const files = await Promise.all(
+    FORMATS.map(async (f) => {
+      try {
+        return { name: `${base}.${extension(f)}`, data: new Uint8Array(await (await makeBlob(d, f, px)).arrayBuffer()) };
+      } catch (err) {
+        if (err instanceof UnsupportedFormatError) return f;
+        throw err;
+      }
+    }),
+  ).catch(() => null);
+  if (!files) {
+    showToast(t('failed'), true);
+    return;
+  }
+  const entries = files.filter((f) => typeof f !== 'string');
+  const skipped = files.filter((f) => typeof f === 'string');
+  const name = `${base}.zip`;
+  save(new Blob([zip(entries)], { type: 'application/zip' }), name);
+  showToast([t('downloadedZip', { file: name, n: entries.length }), ...skipped.map((f) => t('zipSkipped', { fmt: f.toUpperCase() }))].join(' '));
 });
 
 // Clipboard images need ClipboardItem (all current browsers on https).
@@ -292,7 +328,7 @@ if (acToggle && acPanel) {
 
 // ---------- persistence and language ----------
 
-const DESIGN_FIELDS = ['fg', 'eye', 'bg', 'transparent', 'moduleStyle', 'eyeStyle', 'logo', 'margin', 'size'];
+const DESIGN_FIELDS = ['fg', 'eye', 'bg', 'transparent', 'moduleStyle', 'eyeStyle', 'logo', 'margin', 'size', 'format'];
 
 function saveDesign(): void {
   try {

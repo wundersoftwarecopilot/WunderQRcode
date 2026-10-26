@@ -258,6 +258,35 @@
         <p class="meta" id="meta"></p>
         <p class="notice" id="notice" role="status" aria-live="polite"></p>
 
+        <button type="button" class="download-btn" id="download">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v12M6.5 10l5.5 5.5 5.5-5.5M4.5 20.5h15" /></svg>
+          <span data-i18n="downloadQr">Scarica QR Code</span>
+          <span class="fmt-badge" id="download-fmt">PNG</span>
+        </button>
+        <div class="secondary-actions">
+          <button type="button" class="ghost" id="download-zip" title="Un file .zip con PNG, JPEG, WEBP, SVG, PDF ed EPS" data-i18n-title="downloadAllHint">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3.5H6.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V9Z" /><path d="M14 3.5V9h5.5M9.5 5v1.5M9.5 8.5V10M9.5 12v1.5" /><rect x="8.25" y="15" width="2.5" height="3" rx="1" /></svg>
+            <span data-i18n="downloadAll">Tutti i formati</span>
+          </button>
+          <button type="button" class="ghost" id="copy" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" /><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" /></svg>
+            <span data-i18n="copy">Copia immagine</span>
+          </button>
+        </div>
+
+        <fieldset class="group formats">
+          <legend data-i18n="format">Formato</legend>
+          <div class="format-chips">
+            <label class="chip"><input type="radio" name="format" value="png" checked /><span>PNG</span></label>
+            <label class="chip"><input type="radio" name="format" value="jpeg" /><span>JPEG</span></label>
+            <label class="chip"><input type="radio" name="format" value="webp" /><span>WEBP</span></label>
+            <label class="chip"><input type="radio" name="format" value="svg" /><span>SVG</span></label>
+            <label class="chip"><input type="radio" name="format" value="pdf" /><span>PDF</span></label>
+            <label class="chip"><input type="radio" name="format" value="eps" /><span>EPS</span></label>
+          </div>
+          <p class="hint" id="format-hint"></p>
+        </fieldset>
+
         <label class="field">
           <span class="label"><span data-i18n="size">Dimensione</span> <output name="sizeOut" class="value">1024 px</output></span>
           <input type="range" name="size" min="128" max="4096" step="64" value="1024" />
@@ -267,19 +296,6 @@
           <span class="label" data-i18n="fileName">Nome file</span>
           <input type="text" name="fileName" value="qrcode-wunder" spellcheck="false" />
         </label>
-
-        <div class="downloads" id="downloads">
-          <button type="button" class="dl primary" data-format="png"><span class="fmt">PNG</span><span class="cap" data-i18n="fmtPng">Immagine, trasparenza</span></button>
-          <button type="button" class="dl" data-format="jpeg"><span class="fmt">JPEG</span><span class="cap" data-i18n="fmtJpeg">Immagine compatta</span></button>
-          <button type="button" class="dl" data-format="webp"><span class="fmt">WEBP</span><span class="cap" data-i18n="fmtWebp">Immagine per il web</span></button>
-          <button type="button" class="dl" data-format="svg"><span class="fmt">SVG</span><span class="cap" data-i18n="fmtSvg">Vettoriale web</span></button>
-          <button type="button" class="dl" data-format="pdf"><span class="fmt">PDF</span><span class="cap" data-i18n="fmtPdf">Vettoriale per la stampa</span></button>
-          <button type="button" class="dl" data-format="eps"><span class="fmt">EPS</span><span class="cap" data-i18n="fmtEps">Vettoriale per la grafica</span></button>
-        </div>
-        <button type="button" class="copy" id="copy" hidden>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" /><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" /></svg>
-          <span data-i18n="copy">Copia immagine</span>
-        </button>
       </aside>
     </form>
 
