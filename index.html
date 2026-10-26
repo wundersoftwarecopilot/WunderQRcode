@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Generatore di QR Code · Wunder</title>
+    <meta name="description" content="Crea QR code personalizzati per link, testi, Wi-Fi e contatti e scaricali in PNG, JPEG, WEBP, SVG, PDF ed EPS." />
+    <meta name="theme-color" content="#1D1D1B" />
+    <link rel="icon" type="image/svg+xml" href="%WUNDER_FAVICON%" />
+    <script type="module" src="./src/main.ts"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#qr" data-i18n="skip">Vai al generatore</a>
+
+    <header class="site-header">
+      <div class="topbar">
+        <div class="wrap topbar-inner">
+          <span class="tagline">Inspired by precision</span>
+          <div class="lang" role="group" aria-label="Lingua" data-i18n-aria="langGroup">
+            <button type="button" data-lang="it" aria-pressed="true">IT</button>
+            <button type="button" data-lang="en" aria-pressed="false">EN</button>
+          </div>
+        </div>
+      </div>
+      <div class="wrap header-main">
+        <a class="brand" href="https://www.wunder.it/" aria-label="Wunder: vai al sito istituzionale" data-i18n-aria="brandLink"><!--WUNDER_LOGO--></a>
+        <span class="app-name" data-i18n="appTitle">QR Code Generator</span>
+        <nav class="site-nav" aria-label="Siti Wunder" data-i18n-aria="mainNav">
+          <a class="div-medicale" href="https://medicale.wunder.it/it/" data-i18n="navMedicale">Medicale</a>
+          <a class="div-industriale" href="https://industriale.wunder.it/it/" data-i18n="navIndustriale">Industriale</a>
+          <a class="div-design" href="https://design.wunder.it/it/" data-i18n="navDesign">Design</a>
+          <a class="nav-corporate" href="https://www.wunder.it/">wunder.it</a>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow" data-i18n="heroEyebrow">Strumenti Wunder</p>
+        <h1 data-i18n="heroTitle">Generatore di QR Code</h1>
+        <p class="lead" data-i18n="heroLead">Crea QR code per link, testi, reti Wi-Fi e biglietti da visita, personalizzali con i colori e il logo Wunder e scaricali nel formato che ti serve.</p>
+        <ul class="hero-points">
+          <li data-i18n="heroP1">PNG, JPEG, WEBP, SVG, PDF, EPS</li>
+          <li data-i18n="heroP2">Vettoriali pronti per la stampa</li>
+          <li data-i18n="heroP3">Tutto nel browser, nessun dato inviato</li>
+        </ul>
+      </div>
+    </section>
+
+    <form id="qr" class="wrap app" novalidate autocomplete="off">
+      <!-- 1. Content -->
+      <section class="card content-card" aria-labelledby="h-content">
+        <h2 id="h-content"><span class="step">1</span><span data-i18n="step1">Contenuto</span></h2>
+        <div class="tabs" role="tablist" aria-label="Tipo di contenuto" data-i18n-aria="contentType">
+          <button type="button" role="tab" id="tab-url" aria-controls="panel-url" aria-selected="true" data-kind="url">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" /><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" /></svg>
+            <span data-i18n="tabUrl">Link</span>
+          </button>
+          <button type="button" role="tab" id="tab-text" aria-controls="panel-text" aria-selected="false" tabindex="-1" data-kind="text">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h9" /></svg>
+            <span data-i18n="tabText">Testo</span>
+          </button>
+          <button type="button" role="tab" id="tab-wifi" aria-controls="panel-wifi" aria-selected="false" tabindex="-1" data-kind="wifi">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 9a14 14 0 0 1 19 0" /><path d="M5.5 12.5a9.5 9.5 0 0 1 13 0" /><path d="M8.7 16a5 5 0 0 1 6.6 0" /><circle cx="12" cy="19.3" r="1.1" class="fill" /></svg>
+            <span data-i18n="tabWifi">Wi-Fi</span>
+          </button>
+          <button type="button" role="tab" id="tab-vcard" aria-controls="panel-vcard" aria-selected="false" tabindex="-1" data-kind="vcard">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><circle cx="9" cy="10.5" r="2.3" /><path d="M5.6 16.5a3.8 3.8 0 0 1 6.8 0M15 10h3M15 13.5h3" /></svg>
+            <span data-i18n="tabVcard">Contatto</span>
+          </button>
+          <button type="button" role="tab" id="tab-email" aria-controls="panel-email" aria-selected="false" tabindex="-1" data-kind="email">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3.8 6.5 8.2 6.7 8.2-6.7" /></svg>
+            <span data-i18n="tabEmail">E-mail</span>
+          </button>
+          <button type="button" role="tab" id="tab-phone" aria-controls="panel-phone" aria-selected="false" tabindex="-1" data-kind="phone">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 3.5h3.3l1.8 4.6-2.3 1.5a11 11 0 0 0 6.1 6.1l1.5-2.3 4.6 1.8v3.3a2 2 0 0 1-2 2A16.5 16.5 0 0 1 3.5 5.5a2 2 0 0 1 2-2Z" /></svg>
+            <span data-i18n="tabPhone">Telefono</span>
+          </button>
+          <button type="button" role="tab" id="tab-sms" aria-controls="panel-sms" aria-selected="false" tabindex="-1" data-kind="sms">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5h16v11.5H9.5L4 20.5Z" /><path d="M8 8.5h8M8 12h5" /></svg>
+            <span data-i18n="tabSms">SMS</span>
+          </button>
+        </div>
+
+        <div class="panel" role="tabpanel" id="panel-url" aria-labelledby="tab-url">
+          <label class="field">
+            <span class="label" data-i18n="urlLabel">Indirizzo web</span>
+            <input type="url" name="url" value="https://www.wunder.it/" inputmode="url" spellcheck="false" />
+            <span class="hint" data-i18n="urlHint">Se manca, https:// viene aggiunto automaticamente.</span>
+          </label>
+        </div>
+
+        <div class="panel" role="tabpanel" id="panel-text" aria-labelledby="tab-text" hidden>
+          <label class="field">
+            <span class="label" data-i18n="textLabel">Testo</span>
+            <textarea name="text" rows="5" placeholder="Scrivi il testo da codificare" data-i18n-placeholder="textPlaceholder"></textarea>
+          </label>
+        </div>
+
+        <div class="panel" role="tabpanel" id="panel-wifi" aria-labelledby="tab-wifi" hidden>
+          <div class="grid-2">
+            <label class="field">
+              <span class="label" data-i18n="wifiSsid">Nome della rete (SSID)</span>
+              <input type="text" name="wifiSsid" spellcheck="false" />
+            </label>
+            <label class="field">
+              <span class="label" data-i18n="wifiPassword">Password</span>
+              <input type="text" name="wifiPassword" spellcheck="false" />
+            </label>
+            <label class="field">
+              <span class="label" data-i18n="wifiSecurity">Protezione</span>
+              <select name="wifiSecurity">
+                <option value="WPA">WPA / WPA2 / WPA3</option>
+                <option value="WEP">WEP</option>
+                <option value="nopass" data-i18n="wifiNone">Nessuna</option>
+              </select>
+            </label>
+            <label class="check">
+              <input type="checkbox" name="wifiHidden" />
+              <span data-i18n="wifiHidden">Rete nascosta</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="panel" role="tabpanel" id="panel-vcard" aria-labelledby="tab-vcard" hidden>
+          <div class="grid-2">
+            <label class="field"><span class="label" data-i18n="vcFirst">Nome</span><input type="text" name="vcFirst" autocomplete="off" /></label>
+            <label class="field"><span class="label" data-i18n="vcLast">Cognome</span><input type="text" name="vcLast" /></label>
+            <label class="field"><span class="label" data-i18n="vcOrg">Azienda</span><input type="text" name="vcOrg" /></label>
+            <label class="field"><span class="label" data-i18n="vcTitle">Ruolo</span><input type="text" name="vcTitle" /></label>
+            <label class="field"><span class="label" data-i18n="vcMobile">Cellulare</span><input type="tel" name="vcMobile" /></label>
+            <label class="field"><span class="label" data-i18n="vcWork">Telefono ufficio</span><input type="tel" name="vcWork" /></label>
+            <label class="field"><span class="label" data-i18n="vcEmail">E-mail</span><input type="email" name="vcEmail" spellcheck="false" /></label>
+            <label class="field"><span class="label" data-i18n="vcUrl">Sito web</span><input type="url" name="vcUrl" spellcheck="false" /></label>
+            <label class="field span-2"><span class="label" data-i18n="vcStreet">Indirizzo</span><input type="text" name="vcStreet" /></label>
+            <label class="field"><span class="label" data-i18n="vcCity">Città</span><input type="text" name="vcCity" /></label>
+            <div class="grid-2 tight">
+              <label class="field"><span class="label" data-i18n="vcZip">CAP</span><input type="text" name="vcZip" /></label>
+              <label class="field"><span class="label" data-i18n="vcCountry">Paese</span><input type="text" name="vcCountry" /></label>
+            </div>
+            <label class="field span-2"><span class="label" data-i18n="vcNote">Note</span><textarea name="vcNote" rows="2"></textarea></label>
+          </div>
+        </div>
+
+        <div class="panel" role="tabpanel" id="panel-email" aria-labelledby="tab-email" hidden>
+          <label class="field"><span class="label" data-i18n="emailTo">Destinatario</span><input type="email" name="emailTo" spellcheck="false" /></label>
+          <label class="field"><span class="label" data-i18n="emailSubject">Oggetto</span><input type="text" name="emailSubject" /></label>
+          <label class="field"><span class="label" data-i18n="emailBody">Messaggio</span><textarea name="emailBody" rows="4"></textarea></label>
+        </div>
+
+        <div class="panel" role="tabpanel" id="panel-phone" aria-labelledby="tab-phone" hidden>
+          <label class="field"><span class="label" data-i18n="phoneNumber">Numero di telefono</span><input type="tel" name="phone" placeholder="+39 02 1234567" /></label>
+        </div>
+
+        <div class="panel" role="tabpanel" id="panel-sms" aria-labelledby="tab-sms" hidden>
+          <label class="field"><span class="label" data-i18n="smsNumber">Numero di telefono</span><input type="tel" name="smsNumber" placeholder="+39 333 1234567" /></label>
+          <label class="field"><span class="label" data-i18n="smsMessage">Messaggio</span><textarea name="smsMessage" rows="3"></textarea></label>
+        </div>
+      </section>
+
+      <!-- 2. Style -->
+      <section class="card design-card" aria-labelledby="h-design">
+        <h2 id="h-design"><span class="step">2</span><span data-i18n="step2">Stile</span></h2>
+
+        <fieldset class="group">
+          <legend data-i18n="colors">Colori</legend>
+          <div class="colors">
+            <div class="color" data-target="fg">
+              <label><span data-i18n="colorFg">Moduli</span><input type="color" name="fg" value="#1d1d1b" /></label>
+              <div class="swatches" role="group" aria-label="Colori Wunder" data-i18n-aria="presets"></div>
+            </div>
+            <div class="color" data-target="eye">
+              <label><span data-i18n="colorEye">Occhi</span><input type="color" name="eye" value="#d90000" /></label>
+              <div class="swatches" role="group" aria-label="Colori Wunder" data-i18n-aria="presets"></div>
+            </div>
+            <div class="color" data-target="bg">
+              <label><span data-i18n="colorBg">Sfondo</span><input type="color" name="bg" value="#ffffff" /></label>
+              <div class="swatches" role="group" aria-label="Colori Wunder" data-i18n-aria="presets"></div>
+              <label class="check small"><input type="checkbox" name="transparent" /><span data-i18n="transparent">Trasparente</span></label>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend data-i18n="modules">Forma dei moduli</legend>
+          <div class="choices">
+            <label class="choice">
+              <input type="radio" name="moduleStyle" value="square" checked />
+              <svg viewBox="0 0 30 30" aria-hidden="true"><path class="fill" d="M3 3h8v8H3zm8 0h8v8h-8zm0 8h8v8h-8zm8 0h8v8h-8zM3 19h8v8H3zm16 0h8v8h-8z" /></svg>
+              <span data-i18n="modSquare">Quadrati</span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="moduleStyle" value="rounded" />
+              <svg viewBox="0 0 30 30" aria-hidden="true"><g class="fill"><rect x="3" y="3" width="8" height="8" rx="3" /><rect x="11" y="3" width="8" height="8" rx="3" /><rect x="11" y="11" width="8" height="8" rx="3" /><rect x="19" y="11" width="8" height="8" rx="3" /><rect x="3" y="19" width="8" height="8" rx="4" /><rect x="19" y="19" width="8" height="8" rx="3" /></g></svg>
+              <span data-i18n="modRounded">Arrotondati</span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="moduleStyle" value="dots" />
+              <svg viewBox="0 0 30 30" aria-hidden="true"><g class="fill"><circle cx="7" cy="7" r="3.6" /><circle cx="15" cy="7" r="3.6" /><circle cx="15" cy="15" r="3.6" /><circle cx="23" cy="15" r="3.6" /><circle cx="7" cy="23" r="3.6" /><circle cx="23" cy="23" r="3.6" /></g></svg>
+              <span data-i18n="modDots">Punti</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend data-i18n="eyes">Forma degli occhi</legend>
+          <div class="choices">
+            <label class="choice">
+              <input type="radio" name="eyeStyle" value="square" checked />
+              <svg viewBox="0 0 30 30" aria-hidden="true"><path class="fill" fill-rule="evenodd" d="M3 3h24v24H3zm4 4v16h16V7zm4 4h8v8h-8z" /></svg>
+              <span data-i18n="eyeSquare">Quadrati</span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="eyeStyle" value="rounded" />
+              <svg viewBox="0 0 30 30" aria-hidden="true"><g class="fill" fill-rule="evenodd"><path d="M10.5 3h9A7.5 7.5 0 0 1 27 10.5v9a7.5 7.5 0 0 1-7.5 7.5h-9A7.5 7.5 0 0 1 3 19.5v-9A7.5 7.5 0 0 1 10.5 3Zm1 4A4.5 4.5 0 0 0 7 11.5v7a4.5 4.5 0 0 0 4.5 4.5h7a4.5 4.5 0 0 0 4.5-4.5v-7A4.5 4.5 0 0 0 18.5 7Z" /><rect x="11" y="11" width="8" height="8" rx="2.6" /></g></svg>
+              <span data-i18n="eyeRounded">Arrotondati</span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="eyeStyle" value="circle" />
+              <svg viewBox="0 0 30 30" aria-hidden="true"><g class="fill"><path fill-rule="evenodd" d="M15 3a12 12 0 1 1 0 24a12 12 0 1 1 0-24Zm0 4a8 8 0 1 0 0 16a8 8 0 1 0 0-16Z" /><circle cx="15" cy="15" r="4" /></g></svg>
+              <span data-i18n="eyeCircle">Circolari</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="group">
+          <label class="switch">
+            <input type="checkbox" name="logo" role="switch" checked />
+            <span class="track" aria-hidden="true"></span>
+            <span class="switch-text"><span class="switch-logo" aria-hidden="true"><!--WUNDER_LOGO--></span><span data-i18n="logo">Logo Wunder al centro</span></span>
+          </label>
+          <p class="hint" data-i18n="logoHint">Con il logo la correzione d’errore passa ad H (30%), così il codice resta leggibile.</p>
+        </div>
+
+        <div class="group grid-2">
+          <label class="field">
+            <span class="label" data-i18n="ecc">Correzione d’errore</span>
+            <select name="ecc">
+              <option value="L">L · 7%</option>
+              <option value="M" selected>M · 15%</option>
+              <option value="Q">Q · 25%</option>
+              <option value="H">H · 30%</option>
+            </select>
+            <span class="hint" data-i18n="eccHint">Più è alta, più il codice resiste a graffi e sporco, ma diventa più fitto.</span>
+          </label>
+          <label class="field">
+            <span class="label"><span data-i18n="margin">Margine</span> <output name="marginOut" class="value">4 moduli</output></span>
+            <input type="range" name="margin" min="0" max="10" step="1" value="4" />
+          </label>
+        </div>
+      </section>
+
+      <!-- 3. Preview & download -->
+      <aside class="card preview-card" aria-labelledby="h-preview">
+        <h2 id="h-preview"><span class="step">3</span><span data-i18n="step3">Anteprima e download</span></h2>
+        <div class="preview" id="preview" role="img" aria-label="Anteprima del QR code" data-i18n-aria="previewAlt"></div>
+        <p class="meta" id="meta"></p>
+        <p class="notice" id="notice" role="status" aria-live="polite"></p>
+
+        <label class="field">
+          <span class="label"><span data-i18n="size">Dimensione</span> <output name="sizeOut" class="value">1024 px</output></span>
+          <input type="range" name="size" min="128" max="4096" step="64" value="1024" />
+          <span class="hint" id="size-hint"></span>
+        </label>
+        <label class="field">
+          <span class="label" data-i18n="fileName">Nome file</span>
+          <input type="text" name="fileName" value="qrcode-wunder" spellcheck="false" />
+        </label>
+
+        <div class="downloads" id="downloads">
+          <button type="button" class="dl primary" data-format="png"><span class="fmt">PNG</span><span class="cap" data-i18n="fmtPng">Immagine, trasparenza</span></button>
+          <button type="button" class="dl" data-format="jpeg"><span class="fmt">JPEG</span><span class="cap" data-i18n="fmtJpeg">Immagine compatta</span></button>
+          <button type="button" class="dl" data-format="webp"><span class="fmt">WEBP</span><span class="cap" data-i18n="fmtWebp">Immagine per il web</span></button>
+          <button type="button" class="dl" data-format="svg"><span class="fmt">SVG</span><span class="cap" data-i18n="fmtSvg">Vettoriale web</span></button>
+          <button type="button" class="dl" data-format="pdf"><span class="fmt">PDF</span><span class="cap" data-i18n="fmtPdf">Vettoriale per la stampa</span></button>
+          <button type="button" class="dl" data-format="eps"><span class="fmt">EPS</span><span class="cap" data-i18n="fmtEps">Vettoriale per la grafica</span></button>
+        </div>
+        <button type="button" class="copy" id="copy" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" /><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" /></svg>
+          <span data-i18n="copy">Copia immagine</span>
+        </button>
+      </aside>
+    </form>
+
+    <footer class="site-footer">
+      <div class="wrap footer-grid">
+        <div class="footer-brand">
+          <a class="brand" href="https://www.wunder.it/" aria-label="Wunder: vai al sito istituzionale" data-i18n-aria="brandLink"><!--WUNDER_LOGO--></a>
+          <p>
+            <strong>Wunder Sa.Bi. Srl</strong><br />
+            Via Vecchia per Monza 20<br />
+            20056 Trezzo sull’Adda (MI), <span data-i18n="footCountry">Italia</span>
+          </p>
+        </div>
+        <div>
+          <h2 data-i18n="footContacts">Contatti</h2>
+          <p>
+            <a href="tel:+390290964566">+39 02 9096 4566</a><br />
+            <a href="mailto:wunder@wunder.it">wunder@wunder.it</a><br />
+            <a href="https://www.wunder.it/">www.wunder.it</a>
+          </p>
+        </div>
+        <div>
+          <h2 data-i18n="footDivisions">Divisioni</h2>
+          <ul class="divisions">
+            <li><a class="div-medicale" href="https://medicale.wunder.it/it/">Wunder Medicale</a></li>
+            <li><a class="div-industriale" href="https://industriale.wunder.it/it/">Wunder Industriale</a></li>
+            <li><a class="div-design" href="https://design.wunder.it/it/">Wunder Design</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 data-i18n="footPrivacy">Privacy</h2>
+          <p data-i18n="footPrivacyText">I QR code vengono creati interamente nel tuo browser: nessun dato viene inviato o salvato su un server.</p>
+        </div>
+      </div>
+      <div class="wrap footer-bottom">
+        <span>© <span id="year">2026</span> Wunder Sa.Bi. Srl · Inspired by precision</span>
+        <span data-i18n="footTm">QR Code è un marchio registrato di DENSO WAVE INCORPORATED.</span>
+      </div>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
