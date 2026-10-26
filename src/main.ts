@@ -260,15 +260,23 @@ let busy = false;
 async function whileBusy(button: HTMLButtonElement, work: () => Promise<void>): Promise<void> {
   if (busy || !current) return;
   busy = true;
+  // Swap the label's key, not only its text, so a language switch meanwhile keeps the busy label.
   const label = button.querySelector<HTMLElement>('[data-i18n]');
+  const key = label?.dataset.i18n as Key | undefined;
   button.setAttribute('aria-busy', 'true');
-  if (label) label.textContent = t('preparing');
+  if (label) {
+    label.dataset.i18n = 'preparing';
+    label.textContent = t('preparing');
+  }
   try {
     await work();
   } finally {
     busy = false;
     button.removeAttribute('aria-busy');
-    if (label) label.textContent = t(label.dataset.i18n as Key);
+    if (label && key) {
+      label.dataset.i18n = key;
+      label.textContent = t(key);
+    }
   }
 }
 

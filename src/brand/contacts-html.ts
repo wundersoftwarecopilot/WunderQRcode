@@ -83,17 +83,18 @@ export function contactBar(c: Contacts = CONTACTS): string {
   return `<div class="contact-bar"><ul class="contacts" aria-label="Contatti" data-i18n-aria="footContacts">${items.join('')}</ul>${button}${panel(c)}</div>`;
 }
 
-/** The footer's company block, contact column and social links. */
+/** The footer's company block, contact column (label | value rows) and social links. */
 export function footerContacts(c: Contacts = CONTACTS): { company: string; contacts: string; social: string } {
   const company =
     `<strong>${esc(c.company)}</strong><br />${link(mapsHref(c), `${esc(c.street)}<br />${esc(c.zip)} ${esc(c.city)} (${esc(c.province)})`, true)}, ${label('footCountry', 'Italia')}` +
     (c.vat ? `<br />${label('cVat', 'P.IVA')} ${esc(c.vat)}` : '');
-  const lines = [`${label('cPhone', 'Telefono')} ${link(telHref(c.phone), esc(c.phone))}`];
-  if (c.whatsapp) lines.push(`${label('cWhatsapp', 'WhatsApp')} ${link(whatsappHref(c.whatsapp), esc(c.whatsapp), true)}`);
-  if (c.fax) lines.push(`${label('cFax', 'Fax')} ${esc(c.fax)}`);
-  lines.push(`${label('cEmail', 'E-mail')} ${link(`mailto:${c.email}`, esc(c.email))}`);
-  for (const d of c.departments ?? []) lines.push(`${label(DEPARTMENTS[d.key].i18n, DEPARTMENTS[d.key].label)} ${link(`mailto:${d.email}`, esc(d.email))}`);
-  if (c.pec) lines.push(`${label('cPec', 'PEC')} ${link(`mailto:${c.pec}`, esc(c.pec))}`);
-  lines.push(link(c.web, esc(c.web.replace(/^https?:\/\//, '').replace(/\/$/, ''))));
-  return { company, contacts: lines.join('<br />'), social: socialList(c, 'social') };
+  const row = (i18n: string, text: string, value: string) => `<div><dt data-i18n="${i18n}">${text}</dt><dd>${value}</dd></div>`;
+  const rows = [row('cPhone', 'Telefono', link(telHref(c.phone), esc(c.phone)))];
+  if (c.whatsapp) rows.push(row('cWhatsapp', 'WhatsApp', link(whatsappHref(c.whatsapp), esc(c.whatsapp), true)));
+  if (c.fax) rows.push(row('cFax', 'Fax', esc(c.fax)));
+  rows.push(row('cEmail', 'E-mail', link(`mailto:${c.email}`, esc(c.email))));
+  for (const d of c.departments ?? []) rows.push(row(DEPARTMENTS[d.key].i18n, DEPARTMENTS[d.key].label, link(`mailto:${d.email}`, esc(d.email))));
+  if (c.pec) rows.push(row('cPec', 'PEC', link(`mailto:${c.pec}`, esc(c.pec))));
+  rows.push(row('vcUrl', 'Sito web', link(c.web, esc(c.web.replace(/^https?:\/\//, '').replace(/\/$/, '')))));
+  return { company, contacts: `<dl>${rows.join('')}</dl>`, social: socialList(c, 'social') };
 }

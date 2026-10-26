@@ -155,6 +155,30 @@ await downloadAll('url', 'https://www.wunder.it/');
   page.off('download', onDownload);
   check(count === 1, `double press on "Tutti i formati" gives one archive (${count})`);
 }
+// While an export is prepared the button says so, in the current language.
+{
+  await page.fill('input[name=size]', '4096');
+  await page.dispatchEvent('input[name=size]', 'input');
+  await page.waitForTimeout(50);
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.evaluate(() => {
+      document.getElementById('download-zip').click();
+      const busyIt = document.querySelector('#download-zip [data-i18n]').textContent;
+      document.querySelector('[data-lang=en]').click();
+      return busyIt;
+    }).then((busyIt) => page.evaluate((it) => ({ it, en: document.querySelector('#download-zip [data-i18n]').textContent }), busyIt)).then((labels) => {
+      check(labels.it === 'Preparazione…' && labels.en === 'Preparing…', `busy label survives a language switch (${labels.it} → ${labels.en})`);
+    }),
+  ]);
+  await download.cancel();
+  await page.waitForFunction(() => !document.getElementById('download-zip').hasAttribute('aria-busy'));
+  check((await page.textContent('#download-zip [data-i18n]')) === 'All formats', 'label comes back after the export');
+  await page.click('[data-lang=it]');
+  await page.fill('input[name=size]', '1024');
+  await page.dispatchEvent('input[name=size]', 'input');
+  await page.waitForTimeout(50);
+}
 {
   const [download] = await Promise.all([page.waitForEvent('download'), page.click('#download-zip')]);
   const file = join(dl, download.suggestedFilename());

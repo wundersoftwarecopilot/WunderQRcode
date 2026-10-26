@@ -20,7 +20,7 @@ UI in Italian and English.
 - Everything runs in the browser; never send the content anywhere. Do not persist the content
   (Wi-Fi passwords): only design settings and language go to localStorage.
 - Every text in the page goes through `src/i18n.ts` (`data-i18n`, `data-i18n-placeholder`,
-  `data-i18n-aria`); add both languages.
+  `data-i18n-aria`, `data-i18n-title`); add both languages.
 
 ## Pipeline
 `payloads.ts` (string) → `qr/matrix.ts` (modules) → `qr/geometry.ts` (`Drawing`: layers of

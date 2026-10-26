@@ -39,7 +39,7 @@ describe('contact data markup', () => {
     expect(full).toContain('<dt data-i18n="cFax">Fax</dt><dd>+39 02 1234 5678</dd>');
     expect(full).toContain('href="mailto:wunder@pec.example.it"');
     const f = footerContacts({ ...MINIMAL, fax: '+39 02 1234 5678' });
-    expect(f.contacts).toContain('<span data-i18n="cFax">Fax</span> +39 02 1234 5678');
+    expect(f.contacts).toContain('<div><dt data-i18n="cFax">Fax</dt><dd>+39 02 1234 5678</dd></div>');
     expect(f.company).not.toContain('cVat');
     expect(f.social).toBe('');
   });
@@ -47,7 +47,8 @@ describe('contact data markup', () => {
   it('footer: company with VAT number, every contact and the social links', () => {
     const f = footerContacts();
     expect(f.company).toContain(`<span data-i18n="cVat">P.IVA</span> ${CONTACTS.vat}`);
-    expect(f.contacts).toContain('<span data-i18n="cWhatsapp">WhatsApp</span> <a href="https://wa.me/393338035628" target="_blank" rel="noopener">');
+    expect(f.contacts).toMatch(/^<dl><div><dt data-i18n="cPhone">Telefono<\/dt><dd><a href="tel:\+390290964566">/);
+    expect(f.contacts).toContain('<dt data-i18n="cWhatsapp">WhatsApp</dt><dd><a href="https://wa.me/393338035628" target="_blank" rel="noopener">');
     for (const d of CONTACTS.departments!) expect(f.contacts).toContain(`mailto:${d.email}`);
     expect(f.contacts).toContain('<a href="https://www.wunder.it/">www.wunder.it</a>');
     expect(f.social.match(/<li>/g)).toHaveLength(CONTACTS.social!.length);
