@@ -1,5 +1,7 @@
-# Builds the QR code generator, tests it and publishes dist/ on the gh-pages branch,
-# which GitHub Pages serves (Settings → Pages → Source: Deploy from a branch, gh-pages, / (root)).
+# Builds the QR code generator, tests it and publishes it on GitHub Pages.
+# The built site is deployed directly (actions/deploy-pages) and also kept on the gh-pages
+# branch, the Pages source configured for the repository: pushes there made with the workflow
+# token do not reliably start a Pages build on their own.
 name: GitHub Pages
 
 on:
@@ -9,13 +11,15 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,3 +42,17 @@ jobs:
           git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
             commit -q -m "Deploy ${GITHUB_SHA::7} to GitHub Pages"
           git push -f "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
+          rm -rf .git
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
