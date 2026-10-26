@@ -51,8 +51,9 @@ tutti e sei i formati si aggiornano da soli.
 
 ## Pubblicazione
 
-`.github/workflows/pages.yml` compila e pubblica a ogni push su `main` o sul branch di lavoro.
-Una sola volta, in **Settings → Pages → Build and deployment → Source** va scelto
-**GitHub Actions**.
+`.github/workflows/pages.yml`, a ogni push su `main` o sul branch di lavoro, esegue typecheck e
+test, compila e pubblica `dist/` sul branch **`gh-pages`**, servito da GitHub Pages
+(Settings → Pages → Source: *Deploy from a branch*, `gh-pages`, `/ (root)`). Il branch `gh-pages`
+contiene solo il sito compilato e viene riscritto a ogni pubblicazione: non va modificato a mano.
 
 QR Code è un marchio registrato di DENSO WAVE INCORPORATED.

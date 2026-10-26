@@ -1,7 +1,9 @@
 # Wunder QR Code
 
-Static QR code generator (Vite + TypeScript, no framework) deployed to GitHub Pages by
-`.github/workflows/pages.yml` (Pages Source must be "GitHub Actions"). UI in Italian and English.
+Static QR code generator (Vite + TypeScript, no framework). `.github/workflows/pages.yml` tests,
+builds and force-pushes `dist/` to the `gh-pages` branch, which Pages serves (Source: deploy from
+branch `gh-pages`); never edit that branch by hand. `public/.nojekyll` keeps Jekyll off.
+UI in Italian and English.
 
 ## Rules
 - **Look:** Wunder corporate: white and graphite (`--ink #1D1D1B`) with red `#D90000`; division
