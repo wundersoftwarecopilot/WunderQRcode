@@ -211,7 +211,7 @@ function markSwatches(): void {
 function fileBase(): string {
   const s = val('fileName')
     .trim()
-    .replace(/\.(png|jpe?g|webp|svg|pdf|eps)$/i, '')
+    .replace(/\.(png|jpe?g|webp|svg|pdf|eps|zip)$/i, '')
     .replace(/[\\/:*?"<>|\u0000-\u001f]+/g, '-');
   return s || 'qrcode-wunder';
 }
@@ -252,50 +252,72 @@ function showToast(message: string, error = false): void {
   toastTimer = window.setTimeout(() => toast.classList.remove('show'), 3200);
 }
 
-downloadBtn.addEventListener('click', async () => {
-  if (!current) return;
-  const format = radio('format') as Format;
-  const name = `${fileBase()}.${extension(format)}`;
+/**
+ * One export at a time: a large ZIP takes seconds, and a second press must not start another
+ * download. The button keeps its focus (aria-busy rather than disabled) and says what it is doing.
+ */
+let busy = false;
+async function whileBusy(button: HTMLButtonElement, work: () => Promise<void>): Promise<void> {
+  if (busy || !current) return;
+  busy = true;
+  const label = button.querySelector<HTMLElement>('[data-i18n]');
+  button.setAttribute('aria-busy', 'true');
+  if (label) label.textContent = t('preparing');
   try {
-    save(await makeBlob(current, format, +val('size')), name);
-    showToast(t('downloaded', { file: name }));
-  } catch (err) {
-    showToast(err instanceof UnsupportedFormatError ? t('unsupported', { fmt: format.toUpperCase() }) : t('failed'), true);
+    await work();
+  } finally {
+    busy = false;
+    button.removeAttribute('aria-busy');
+    if (label) label.textContent = t(label.dataset.i18n as Key);
   }
-});
+}
+
+downloadBtn.addEventListener('click', () =>
+  whileBusy(downloadBtn, async () => {
+    const format = radio('format') as Format;
+    const name = `${fileBase()}.${extension(format)}`;
+    try {
+      save(await makeBlob(current!, format, +val('size')), name);
+      showToast(t('downloaded', { file: name }));
+    } catch (err) {
+      showToast(err instanceof UnsupportedFormatError ? t('unsupported', { fmt: format.toUpperCase() }) : t('failed'), true);
+    }
+  }),
+);
 
 /** Every format in one .zip; a format the browser cannot encode (WebP on Safari) is left out. */
-zipBtn.addEventListener('click', async () => {
-  if (!current) return;
-  const d = current;
-  const base = fileBase();
-  const px = +val('size');
-  const files = await Promise.all(
-    FORMATS.map(async (f) => {
-      try {
-        return { name: `${base}.${extension(f)}`, data: new Uint8Array(await (await makeBlob(d, f, px)).arrayBuffer()) };
-      } catch (err) {
-        if (err instanceof UnsupportedFormatError) return f;
-        throw err;
-      }
-    }),
-  ).catch(() => null);
-  if (!files) {
-    showToast(t('failed'), true);
-    return;
-  }
-  const entries = files.filter((f) => typeof f !== 'string');
-  const skipped = files.filter((f) => typeof f === 'string');
-  const name = `${base}.zip`;
-  save(new Blob([zip(entries)], { type: 'application/zip' }), name);
-  showToast([t('downloadedZip', { file: name, n: entries.length }), ...skipped.map((f) => t('zipSkipped', { fmt: f.toUpperCase() }))].join(' '));
-});
+zipBtn.addEventListener('click', () =>
+  whileBusy(zipBtn, async () => {
+    const d = current!;
+    const base = fileBase();
+    const px = +val('size');
+    const files = await Promise.all(
+      FORMATS.map(async (f) => {
+        try {
+          return { name: `${base}.${extension(f)}`, data: new Uint8Array(await (await makeBlob(d, f, px)).arrayBuffer()) };
+        } catch (err) {
+          if (err instanceof UnsupportedFormatError) return f;
+          throw err;
+        }
+      }),
+    ).catch(() => null);
+    if (!files) {
+      showToast(t('failed'), true);
+      return;
+    }
+    const entries = files.filter((f) => typeof f !== 'string');
+    const skipped = files.filter((f) => typeof f === 'string');
+    const name = `${base}.zip`;
+    save(new Blob([zip(entries)], { type: 'application/zip' }), name);
+    showToast([t('downloadedZip', { file: name, n: entries.length }), ...skipped.map((f) => t('zipSkipped', { fmt: f.toUpperCase() }))].join(' '));
+  }),
+);
 
 // Clipboard images need ClipboardItem (all current browsers on https).
 if ('ClipboardItem' in window && navigator.clipboard?.write) {
   copyBtn.hidden = false;
   copyBtn.addEventListener('click', async () => {
-    if (!current) return;
+    if (!current || busy) return;
     try {
       // The promise form keeps Safari's user-activation requirement satisfied.
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': toRasterBlob(current, +val('size'), 'image/png') })]);
@@ -323,6 +345,12 @@ if (acToggle && acPanel) {
   });
   document.addEventListener('click', (e) => {
     if (!acPanel.hidden && !(e.target as Element).closest('.contact-bar')) setOpen(false);
+  });
+  // Tabbing past the panel closes it, so it never covers the controls that take the focus next.
+  const bar = acToggle.closest('.contact-bar')!;
+  bar.addEventListener('focusout', (e) => {
+    const next = (e as FocusEvent).relatedTarget as Node | null;
+    if (!acPanel.hidden && next && !bar.contains(next)) setOpen(false);
   });
 }
 

@@ -71,7 +71,7 @@ textarea {
   position: absolute;
   left: 16px;
   top: -48px;
-  z-index: 10;
+  z-index: 50;
   padding: 10px 16px;
   background: var(--red);
   color: #fff;
@@ -1018,9 +1018,14 @@ input[type='color']::-moz-color-swatch {
 .fmt-badge {
   padding: 2px 8px;
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(0, 0, 0, 0.22);
   font-size: 13px;
   letter-spacing: 0.06em;
+}
+.download-btn[aria-busy='true'],
+.ghost[aria-busy='true'] {
+  cursor: progress;
+  opacity: 0.75;
 }
 .download-btn:disabled {
   opacity: 0.45;
@@ -1121,6 +1126,15 @@ input[type='color']::-moz-color-swatch {
 }
 #format-hint {
   margin-top: 8px;
+}
+@media (forced-colors: active) {
+  /* Background and colour are overridden in high-contrast modes: mark the chosen format by system colours. */
+  .chip input:checked + span {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
 }
 
 /* ---------- footer ---------- */

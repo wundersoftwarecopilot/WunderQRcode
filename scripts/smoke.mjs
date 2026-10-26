@@ -67,6 +67,19 @@ check((await page.isHidden('#all-contacts')) && (await page.getAttribute('.ac-to
 await page.click('.ac-toggle');
 await page.click('h1');
 check(await page.isHidden('#all-contacts'), 'a click outside closes the contacts panel');
+await page.click('.ac-toggle');
+await page.focus('#all-contacts .social a:last-of-type');
+for (let i = 0; i < 4 && !(await page.isHidden('#all-contacts')); i++) await page.keyboard.press('Tab');
+check(await page.isHidden('#all-contacts'), 'tabbing out of the contacts panel closes it');
+await page.reload();
+await page.waitForSelector('#preview svg');
+await page.keyboard.press('Tab');
+const skipOnTop = await page.evaluate(() => {
+  const a = document.querySelector('.skip-link');
+  const r = a.getBoundingClientRect();
+  return document.activeElement === a && document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2) === a;
+});
+check(skipOnTop, 'the skip link shows above the top bar when focused');
 check((await page.textContent('#meta')).startsWith('Versione'), 'meta line: ' + (await page.textContent('#meta')));
 await page.screenshot({ path: join(shots, 'desktop.png'), fullPage: true });
 
@@ -128,7 +141,20 @@ async function downloadAll(tag, expected) {
 // Default: link to wunder.it, logo on, red eyes, 1024 px.
 await downloadAll('url', 'https://www.wunder.it/');
 
-// All formats at once.
+// All formats at once; a second press while it is being built does nothing.
+{
+  let count = 0;
+  const onDownload = () => count++;
+  page.on('download', onDownload);
+  await page.evaluate(() => {
+    const b = document.getElementById('download-zip');
+    b.click();
+    b.click();
+  });
+  await page.waitForTimeout(2500);
+  page.off('download', onDownload);
+  check(count === 1, `double press on "Tutti i formati" gives one archive (${count})`);
+}
 {
   const [download] = await Promise.all([page.waitForEvent('download'), page.click('#download-zip')]);
   const file = join(dl, download.suggestedFilename());

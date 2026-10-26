@@ -1,8 +1,9 @@
 # Wunder QR Code
 
 Static QR code generator (Vite + TypeScript, no framework). `.github/workflows/pages.yml` tests,
-builds and force-pushes `dist/` to the `gh-pages` branch, which Pages serves (Source: deploy from
-branch `gh-pages`); never edit that branch by hand. `public/.nojekyll` keeps Jekyll off.
+builds and deploys `dist/` with `actions/deploy-pages`, and also force-pushes it to `gh-pages` (the
+configured Pages source; never edit it by hand). Pushes to `gh-pages` made with the workflow token
+stopped starting Pages builds, hence the direct deploy. `public/.nojekyll` keeps Jekyll off.
 UI in Italian and English.
 
 ## Rules
@@ -27,6 +28,11 @@ M/L/C/Z paths in module units, y down) → `export/{svg,raster,pdf,eps}.ts`. All
 the same `Drawing`, so a new style only touches `geometry.ts`. Finder patterns and alignment
 patterns are drawn whole in the eye style (loose dots there stop readers); the logo cut-out
 hides modules and forces ECC H.
+
+## Downloads
+One "Scarica QR Code" button saves the format picked in the chips (`name="format"`, remembered in
+localStorage); "Tutti i formati" builds a stored ZIP of all six (`src/export/zip.ts`) and leaves out
+a raster type the browser cannot encode (WebP on Safari).
 
 ## Commands
 - `npm run dev`, `npm run build` (→ `dist/`), `npm run typecheck`, `npm test`

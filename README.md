@@ -11,8 +11,12 @@ Il logo in alto (e quello nel footer) porta al sito istituzionale https://www.wu
 - **Stile:** colori di moduli, occhi e sfondo (con i colori Wunder a portata di clic e lo
   sfondo trasparente), moduli quadrati / arrotondati / a punti, occhi quadrati / arrotondati /
   circolari, logo Wunder al centro, correzione d'errore L–H, margine.
-- **Download:** PNG, JPEG, WEBP (128–4096 px), SVG, PDF ed EPS vettoriali (dimensione fisica =
-  pixel a 300 dpi), copia negli appunti.
+- **Download:** il pulsante **Scarica QR Code** salva il codice nel formato scelto (PNG, JPEG,
+  WEBP da 128 a 4096 px; SVG, PDF ed EPS vettoriali, con dimensione fisica = pixel a 300 dpi);
+  **Tutti i formati** scarica un unico .zip con tutti e sei; **Copia immagine** lo copia negli
+  appunti.
+- **Contatti Wunder** in alto a destra (telefono, WhatsApp, e-mail, sede) e, con *Tutti i contatti*,
+  l'elenco completo; gli stessi dati sono nel footer (`src/brand/contacts.ts`).
 - Tutto avviene nel browser: nessun dato lascia il dispositivo. Interfaccia in italiano e inglese.
 
 Con il logo attivo la correzione d'errore passa automaticamente ad H (30%). Ogni combinazione di
@@ -53,8 +57,8 @@ tutti e sei i formati si aggiornano da soli.
 ## Pubblicazione
 
 `.github/workflows/pages.yml`, a ogni push su `main` o sul branch di lavoro, esegue typecheck e
-test, compila e pubblica `dist/` sul branch **`gh-pages`**, servito da GitHub Pages
-(Settings → Pages → Source: *Deploy from a branch*, `gh-pages`, `/ (root)`). Il branch `gh-pages`
-contiene solo il sito compilato e viene riscritto a ogni pubblicazione: non va modificato a mano.
+test, compila il sito e lo pubblica su GitHub Pages con `actions/deploy-pages`; lo stesso `dist/`
+viene copiato anche sul branch **`gh-pages`** (la sorgente Pages configurata), che contiene solo il
+sito compilato e viene riscritto a ogni pubblicazione: non va modificato a mano.
 
 QR Code è un marchio registrato di DENSO WAVE INCORPORATED.
